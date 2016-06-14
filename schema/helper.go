@@ -145,4 +145,5 @@ var sqlTypes = map[string]int{
 	"int":      INTEGER,
 	"blob":     BLOB,
 	"bytea":    BLOB,
+	"json":     JSON,
 }
