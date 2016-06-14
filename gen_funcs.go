@@ -8,7 +8,7 @@ import (
 
 	"github.com/acsellers/inflections"
 	"github.com/idiomatic/sqlgen/parse"
-	//"github.com/idiomatic/sqlgen/schema"
+	"github.com/idiomatic/sqlgen/schema"
 )
 
 func writeImports(w io.Writer, tree *parse.Node, pkgs ...string) {
@@ -238,10 +238,14 @@ func writeSelectRows(w io.Writer, tree *parse.Node) {
 	fmt.Fprintf(w, sSelectRows, plural, tree.Type, plural)
 }
 
-func writeInsertFunc(w io.Writer, tree *parse.Node) {
-	// TODO this assumes I'm using the ID field.
-	// we should not make that assumption
-	fmt.Fprintf(w, sInsert, tree.Type, tree.Type, tree.Type)
+func writeInsertFunc(w io.Writer, tree *parse.Node, table *schema.Table) {
+	var hook string
+	if table.LastInsertId {
+		hook = sLastInsertId
+	} else {
+		hook = sNoLastInsertId
+	}
+	fmt.Fprintf(w, sInsert, tree.Type, tree.Type, tree.Type, hook)
 }
 
 func writeUpdateFunc(w io.Writer, tree *parse.Node) {
