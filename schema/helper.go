@@ -94,7 +94,8 @@ func Load(tree *parse.Node) *Table {
 		}
 
 		// get the full path name
-		path := node.Path()
+		// omit table name
+		path := node.Path()[1:]
 		var parts []string
 		for _, part := range path {
 			if part.Tags != nil && part.Tags.Name != "" {
@@ -146,4 +147,5 @@ var sqlTypes = map[string]int{
 	"int":      INTEGER,
 	"blob":     BLOB,
 	"bytea":    BLOB,
+	"json":     JSON,
 }
