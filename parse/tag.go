@@ -16,15 +16,16 @@ const (
 // Tag stores the parsed data from the tag string in
 // a struct field.
 type Tag struct {
-	Name    string `yaml:"name"`
-	Type    string `yaml:"type"`
-	Primary bool   `yaml:"pk"`
-	Auto    bool   `yaml:"auto"`
-	Index   string `yaml:"index"`
-	Unique  string `yaml:"unique"`
-	Size    int    `yaml:"size"`
-	Skip    bool   `yaml:"skip"`
-	Encode  string `yaml:"encode"`
+	Name     string `yaml:"name"`
+	Type     string `yaml:"type"`
+	Primary  bool   `yaml:"pk"`
+	Auto     bool   `yaml:"auto"`
+	Index    string `yaml:"index"`
+	Unique   string `yaml:"unique"`
+	Size     int    `yaml:"size"`
+	Skip     bool   `yaml:"skip"`
+	Encode   string `yaml:"encode"`
+	JSONAttr string `yaml:"json"`
 }
 
 // parseTag parses a tag string from the struct
@@ -33,7 +34,8 @@ func parseTag(raw string) (*Tag, error) {
 	var tag = new(Tag)
 
 	raw = strings.Replace(raw, "`", "", -1)
-	raw = reflect.StructTag(raw).Get("sql")
+	structTag := reflect.StructTag(raw)
+	raw = structTag.Get("sql")
 
 	// if the tag indicates the field should
 	// be skipped we can exit right away.
@@ -49,5 +51,10 @@ func parseTag(raw string) (*Tag, error) {
 	// unmarshals the Yaml formatted string into
 	// the Tag structure.
 	var err = yaml.Unmarshal([]byte(raw), tag)
+
+	if tag.JSONAttr == "" {
+		tag.JSONAttr = structTag.Get("json")
+	}
+
 	return tag, err
 }

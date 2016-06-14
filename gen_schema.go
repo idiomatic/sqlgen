@@ -6,12 +6,13 @@ import (
 	"strings"
 
 	"bitbucket.org/pkg/inflect"
+	"github.com/drone/sqlgen/parse"
 	"github.com/drone/sqlgen/schema"
 )
 
 // writeSchema writes SQL statements to CREATE, INSERT,
 // UPDATE and DELETE values from Table t.
-func writeSchema(w io.Writer, d schema.Dialect, t *schema.Table) {
+func writeSchema(w io.Writer, d schema.Dialect, tree *parse.Node, t *schema.Table) {
 
 	writeConst(w,
 		d.Table(t),
@@ -48,6 +49,23 @@ func writeSchema(w io.Writer, d schema.Dialect, t *schema.Table) {
 			d.Update(t, t.Primary),
 			"update", inflect.Singularize(t.Name), "pkey", "stmt",
 		)
+
+		fmt.Fprintf(w, `var %s = map[string]string{
+`,
+			inflect.Typeify(fmt.Sprintf("update_%s_json_map", inflect.Singularize(t.Name))))
+		for i, node := range tree.Edges() {
+			if i < len(t.Fields) {
+				columnName := t.Fields[i].Name
+				//if field.Patchable
+				jsonAttr := strings.Split(node.Tags.JSONAttr, ",")[0]
+				if jsonAttr != "-" {
+					fmt.Fprintf(w, `"%s": "%s",
+`, jsonAttr, columnName)
+				}
+			}
+		}
+		fmt.Fprintf(w, `}
+`)
 
 		writeConst(w,
 			d.Delete(t, t.Primary),
