@@ -64,7 +64,7 @@ func main() {
 
 	// write the sql functions
 	if *genSchema {
-		writeSchema(&buf, dialect, table)
+		writeSchema(&buf, dialect, tree, table)
 	}
 
 	// formats the generated file using gofmt
