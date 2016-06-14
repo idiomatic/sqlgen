@@ -7,8 +7,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/drone/sqlgen/parse"
-	"github.com/drone/sqlgen/schema"
+	"github.com/idiomatic/sqlgen/parse"
+	"github.com/idiomatic/sqlgen/schema"
 )
 
 var (

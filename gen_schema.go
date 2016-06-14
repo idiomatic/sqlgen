@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"bitbucket.org/pkg/inflect"
-	"github.com/drone/sqlgen/schema"
+	"github.com/idiomatic/sqlgen/schema"
 )
 
 // writeSchema writes SQL statements to CREATE, INSERT,
